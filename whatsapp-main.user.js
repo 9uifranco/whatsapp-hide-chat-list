@@ -2,6 +2,7 @@
 // @name         WhatsApp Hide Chat List
 // @namespace    http://tampermonkey.net/
 // @version      0.2
+// @license      MIT
 // @description  Hide WhatsApp Web chat list
 // @author       Guilherme Franco (9uifranco)
 // @match        https://web.whatsapp.com/
