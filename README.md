@@ -1,10 +1,12 @@
 # whatsapp-hide-chat-list
 
-A userscript for hiding WhatsApp Web chat list.
+A userscript originally designed for hiding Whatsapp Web chat list, now with more features to enhance privacy:
+
+- **Chat List Hidden:** Chat list stays hidden until hovered over to reveal.
+- **Screen Blurring Button:** Instantly blur screen for added security.
+- **Gallery Hidden:** Gallery stays hidden until hovered over.
 
 ![](./demo.gif)
-
-Worried about someone peeking at your messages? This script hides the chat list and only shows it when you move your mouse to the left.
 
 ## Installation
 
