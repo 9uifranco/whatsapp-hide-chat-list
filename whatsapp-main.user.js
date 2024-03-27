@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Hide Chat List
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @license      MIT
 // @description  Hide WhatsApp Web chat list
 // @author       Guilherme Franco (9uifranco)
@@ -107,10 +107,30 @@
                 // If there are added nodes, update the element visibility
                 if (mutation.addedNodes.length > 0) {
                     updateChatListVisibility();
+                    updateGalleryVisibility();
                 }
             }
         });
     });
+
+    // Update gallery visibility
+    function updateGalleryVisibility() {
+        const gallery = document.querySelector("._3GUJh");
+
+        if (gallery) {
+            gallery.style.height = '0';
+        }
+
+        const isMouseOverElement = isMouseOver(gallery);
+
+        if (isMouseOverElement || (event.clientY >= (document.body.scrollHeight - hideThreshold))) {
+            // Show
+            gallery.style.height = '6.25rem';
+        } else {
+            // Hide
+            gallery.style.height = '0';
+        }
+    }
 
     // Start observing the document for changes
     observer.observe(document.body, {
@@ -125,6 +145,7 @@
         document.addEventListener('mousemove', function (event) {
             adjustToolbarPosition(event);
             updateChatListVisibility(event);
+            updateGalleryVisibility(event);
         });
         document.addEventListener('mouseleave', updateChatListVisibility);
     }
