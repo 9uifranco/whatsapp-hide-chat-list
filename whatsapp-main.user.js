@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Hide Chat List
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @license      MIT
 // @description  Hide WhatsApp Web chat list
 // @author       Guilherme Franco (9uifranco)
@@ -53,7 +53,7 @@
     function adjustToolbarPosition(event) {
         let mouseX = event.clientX;
 
-        if (mouseX > window.innerWidth - 5 || isMouseOver(customToolbar)) {
+        if (mouseX > window.innerWidth - 20 || isMouseOver(customToolbar)) {
             customToolbar.style.right = '0';
         } else {
             customToolbar.style.right = '-200px';
@@ -67,10 +67,13 @@
 
     // Update chat list visibility
     function updateChatListVisibility() {
-        const chatList = document.querySelector("body > div > div > div > div:nth-child(3)");
-        const headerElement = document.querySelector(".lyvj5e2u");
+        const chatList = document.querySelector('div._aigs > div:nth-child(3)');
 
-        if (chatList && (chatList.classList.contains('_2Ts6i') && chatList.classList.contains("_3RGKj"))) {
+        const headerElement = chatList.querySelector('header');
+
+        if (chatList) {
+            const isMouseOverElement = isMouseOver(chatList);
+
             if (!hasInitialized) {
                 chatList.style.display = 'flex';
                 chatList.style.flex = '0 0';
@@ -83,8 +86,6 @@
 
                 hasInitialized = true;
             }
-
-            const isMouseOverElement = isMouseOver(chatList);
 
             if (isMouseOverElement || event.clientX <= hideThreshold) {
                 // Show
@@ -106,6 +107,7 @@
             if (mutation.type === 'childList') {
                 // If there are added nodes, update the element visibility
                 if (mutation.addedNodes.length > 0) {
+                    console.log('a')
                     updateChatListVisibility();
                     updateGalleryVisibility();
                 }
@@ -115,20 +117,20 @@
 
     // Update gallery visibility
     function updateGalleryVisibility() {
-        const gallery = document.querySelector("._3GUJh");
+        const gallery = document.querySelector("._alip");
 
         if (gallery) {
             gallery.style.height = '0';
-        }
 
-        const isMouseOverElement = isMouseOver(gallery);
+            const isMouseOverElement = isMouseOver(gallery);
 
-        if (isMouseOverElement || (event.clientY >= (document.body.scrollHeight - hideThreshold))) {
-            // Show
-            gallery.style.height = '6.25rem';
-        } else {
-            // Hide
-            gallery.style.height = '0';
+            if (isMouseOverElement || (event.clientY >= (document.body.scrollHeight - hideThreshold))) {
+                // Show
+                gallery.style.height = '6.25rem';
+            } else {
+                // Hide
+                gallery.style.height = '0';
+            }
         }
     }
 
