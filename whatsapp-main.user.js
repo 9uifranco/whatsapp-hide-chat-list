@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         WhatsApp Hide Chat List
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @license      MIT
 // @description  Hide WhatsApp Web chat list
 // @author       Guilherme Franco (9uifranco)
 // @match        https://web.whatsapp.com/
 // @grant        none
 // @require      https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js
+// @downloadURL https://update.greasyfork.org/scripts/480773/WhatsApp%20Hide%20Chat%20List.user.js
+// @updateURL https://update.greasyfork.org/scripts/480773/WhatsApp%20Hide%20Chat%20List.meta.js
 // ==/UserScript==
 
 (function () {
@@ -16,7 +18,7 @@
     let overlayButton, customToolbar;
     let hasInitialized = false;
     let isElementHidden = false;
-    const hideThreshold = 20;
+    const hideThreshold = 40;
 
     // Create toolbar
     function createToolbar() {
@@ -67,21 +69,26 @@
 
     // Update chat list visibility
     function updateChatListVisibility() {
-        const chatList = document.querySelector('div._aigs > div:nth-child(3)');
-
-        const headerElement = chatList.querySelector('header');
+        const chatList = document.querySelector('div._aigs > div:nth-child(4)');
 
         if (chatList) {
+            const headerElement = chatList.querySelector('header');
+            const sideElement = chatList.querySelector('#side');
+
             const isMouseOverElement = isMouseOver(chatList);
 
             if (!hasInitialized) {
                 chatList.style.display = 'flex';
-                chatList.style.flex = '0 0';
-                chatList.style.maxWidth = '80%';
+                chatList.style.flex = 'unset';
+                chatList.style.maxWidth = '300px';
                 chatList.style.width = '0%';
+                chatList.style.backgroundColor = '#111b21';
                 chatList.style.transition = 'width .5s ease-out 0s';
 
-                headerElement.style.paddingLeft = '0px';
+                sideElement.style.opacity = '0';
+                sideElement.style.transition = 'opacity .5s ease-out 0s';
+
+                headerElement.style.opacity = '0';
                 headerElement.style.transition = 'all .5s ease-out 0s';
 
                 hasInitialized = true;
@@ -90,12 +97,14 @@
             if (isMouseOverElement || event.clientX <= hideThreshold) {
                 // Show
                 chatList.style.width = '100%';
-                headerElement.style.paddingLeft = '16px';
+                sideElement.style.opacity = '1';
+                headerElement.style.opacity = '1';
                 isElementHidden = false;
             } else {
                 // Hide
                 chatList.style.width = '0%';
-                headerElement.style.paddingLeft = '0px';
+                sideElement.style.opacity = '0';
+                headerElement.style.opacity = '0';
                 isElementHidden = true;
             }
         }
@@ -107,7 +116,6 @@
             if (mutation.type === 'childList') {
                 // If there are added nodes, update the element visibility
                 if (mutation.addedNodes.length > 0) {
-                    console.log('a')
                     updateChatListVisibility();
                     updateGalleryVisibility();
                 }
@@ -142,6 +150,22 @@
 
     // Initialize the script
     function init() {
+        console.log(`%c
+
+.d888 d8b            d8b
+d88P" "88b           Y8P
+888    888
+ "Y8888888 888   888 888
+       888 888   888 888
+       888 888   888 888
+      d88P Y8b.  X88 888
+  88888P"   "Y8888P' 888 f r a n c o
+
+
+  github.com/9uifranco
+
+
+                                                            `, "font-family:monospace; color: orange;");
         createToolbar();
         overlayButton.addEventListener('click', toggleOverlay);
         document.addEventListener('mousemove', function (event) {
