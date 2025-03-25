@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WhatsApp Hide Chat List
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @license      MIT
 // @description  Hide WhatsApp Web chat list
 // @author       Guilherme Franco (9uifranco)
@@ -69,7 +69,7 @@
 
     // Update chat list visibility
     function updateChatListVisibility() {
-        const chatList = document.querySelector('div._aigs > div:nth-child(4)');
+        const chatList = document.querySelector('div._aigw.x9f619.x1n2onr6.x5yr21d.x17dzmu4.x1i1dayz.x2ipvbc.x1w8yi2h.x78zum5.xdt5ytf.xa1v5g2.x1plvlek.xryxfnj.xd32934.x1m6msm');
 
         if (chatList) {
             const headerElement = chatList.querySelector('header');
@@ -80,7 +80,7 @@
             if (!hasInitialized) {
                 chatList.style.display = 'flex';
                 chatList.style.flex = 'unset';
-                chatList.style.maxWidth = '300px';
+                chatList.style.maxWidth = '400px';
                 chatList.style.width = '0%';
                 chatList.style.backgroundColor = '#111b21';
                 chatList.style.transition = 'width .5s ease-out 0s';
@@ -125,7 +125,7 @@
 
     // Update gallery visibility
     function updateGalleryVisibility() {
-        const gallery = document.querySelector("._alip");
+        const gallery = document.querySelector('div.x10l6tqk.x1ey2m1c.xaivifb.x9f619.x78zum5.xdt5ytf.x6s0dn4.x1nhvcw1.xh8yej3.xpyat2d.x6ikm8r.x10wlt62.x13fuv20.x178xt8z.x1sdoubt.xg01cxk.xqu7myx');
 
         if (gallery) {
             gallery.style.height = '0';
@@ -244,4 +244,5 @@ d88P" "88b           Y8P
     document.head.appendChild(styleElement);
 
     init();
+    updateChatListVisibility();
 })();
