@@ -17,9 +17,10 @@
 
     let overlayButton, customToolbar;
     let hasInitialized = false;
-    let isElementHidden = false;
-    let cssInjected = false;
     let hideThreshold = 400;
+    let chatWidth = 400;
+    let chatOpenThreshold = 400;
+    let chatClosedThreshold = 80;
 
     // store last mouse coords so non-event callers can still decide
     let lastMouse = { x: null, y: null };
@@ -28,20 +29,48 @@
     function createToolbar() {
         const toolbar = document.createElement("div");
         toolbar.innerHTML = `
-        <nav id="customToolbar">
+    <nav id="customToolbar">
+        <div style="display:flex; flex-direction:column; gap:0.25rem;">
             <button title="Blur Screen" id="overlayButton" class="eye">
                 <i class="fas fa-eye-slash fa-xs"></i>
             </button>
-            <a title="GitHub Repo" id="githubLink"
-               href="https://github.com/9uifranco/whatsapp-hide-chat-list#whatsapp-hide-chat-list"
-               target="_blank"><i class="fa-brands fa-github fa-xs"></i></a>
-        </nav>`;
+            <label style="color:white; font-size:0.75rem;">Chat Width
+                <input type="number" id="inputChatWidth" style="width:4rem;" value="${chatWidth}">
+            </label>
+            <label style="color:white; font-size:0.75rem;">Open Threshold
+                <input type="number" id="inputOpenThreshold" style="width:4rem;" value="${chatOpenThreshold}">
+            </label>
+            <label style="color:white; font-size:0.75rem;">Closed Threshold
+                <input type="number" id="inputClosedThreshold" style="width:4rem;" value="${chatClosedThreshold}">
+            </label>
+        </div>
+        <a title="GitHub Repo" id="githubLink"
+           href="https://github.com/9uifranco/whatsapp-hide-chat-list#whatsapp-hide-chat-list"
+           target="_blank" style="margin-top:auto;">
+           <i class="fa-brands fa-github fa-xs"></i>
+        </a>
+    </nav>`;
         document.body.prepend(toolbar);
 
         overlayButton = document.getElementById("overlayButton");
         customToolbar = document.getElementById("customToolbar");
 
         if (overlayButton) overlayButton.addEventListener("click", toggleOverlay);
+
+        // Listen for input changes
+        const inputChatWidth = document.getElementById("inputChatWidth");
+        const inputOpen = document.getElementById("inputOpenThreshold");
+        const inputClosed = document.getElementById("inputClosedThreshold");
+
+        inputChatWidth.addEventListener("input", (e) => {
+            chatWidth = parseInt(e.target.value) || 400;
+        });
+        inputOpen.addEventListener("input", (e) => {
+            chatOpenThreshold = parseInt(e.target.value) || 400;
+        });
+        inputClosed.addEventListener("input", (e) => {
+            chatClosedThreshold = parseInt(e.target.value) || 80;
+        });
     }
 
     /* OVERLAY */
@@ -93,6 +122,8 @@
         // initialize styles once
         if (!hasInitialized) {
             chatList.style.display = "flex";
+            chatList.style.maxWidth = `${chatWidth}px`;
+            chatList.style.width = "100%";
             chatList.style.transition = "max-width 0.35s ease-out, opacity 0.35s ease-out";
             chatList.style.overflow = "hidden";
 
@@ -107,24 +138,18 @@
 
         // choose threshold dynamically
         const mouseX = (evt && typeof evt.clientX === "number") ? evt.clientX : (typeof lastMouse.x === "number" ? lastMouse.x : Infinity);
-        const threshold = mouseX <= hideThreshold ? 400 : 80;
 
-        if (mouseX <= threshold) {
-            chatList.style.maxWidth = "100%";
-            chatList.style.opacity = "1";
-
+        if (mouseX <= hideThreshold) {
+            chatList.style.maxWidth = `${chatWidth}px`;
+            chatList.style.width = "100%";
+            hideThreshold = chatOpenThreshold;
             const header = chatList.querySelector("header");
             if (header) header.style.opacity = "1";
-
-            isElementHidden = false;
         } else {
             chatList.style.maxWidth = "0";
-            chatList.style.opacity = "0";
-
+            hideThreshold = chatClosedThreshold;
             const header = chatList.querySelector("header");
             if (header) header.style.opacity = "0";
-
-            isElementHidden = true;
         }
     }
 
